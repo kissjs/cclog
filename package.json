@@ -1,0 +1,9 @@
+{
+    "name": "cclog"
+  , "version": "0.1.0"
+  , "description": "replace the console object to prepend the file and line number, time, show in colors"
+  , "main": "cclog"
+  , "dependencies": {
+        "callsite": "*"
+    }
+}
