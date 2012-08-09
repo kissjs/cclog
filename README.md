@@ -1,60 +1,62 @@
 # cclog
 
-colorful console log
+Colorful console log, with line number via v8 [callSite](http://github.com/visionmedia/callsite).
 
-Extends the native Node.JS `console` object to prefix logging functions
-with the [CallSite](http://github.com/visionmedia/callsite) information.
 
-To read more about runtime stack trace introspection you can refer to [this
-article](http://www.devthought.com/2011/12/22/a-string-is-not-an-error/#beyond).
+## Installation
+
+    npm install cclog
+    
+## Usage
+
+### cclog.log(fmt, [...])
+*stdout* fmt see [util.format](http://nodejs.org/api/util.html#util_util_format_format)
+
+### cclog.info(fmt, [...])
+*stdout*
+
+### cclog.warn(fmt, [...])
+*stderr*
+
+### cclog.error(fmt, [...])
+*stderr*
+
+### cclog.dir(obj, level)
+*stdout* inspect obj
+
+### cclog.trace(obj)
+*stderr* if obj is `Error` instance then log the stack, else inspect it.
+
+### cclog.ifError
+*stderr* *getter*
+
+```js
+fs.mkdir('/foo', function(err) {
+  if(err) cclog.trace(err);
+});
+```
+
+use `cclog.ifError` to get a closure, NOTE always use `cclog.`
+
+```js
+fs.mkdir('/foo', cclog.ifError);
+```
+
+WRONG
+```js
+var ifError = cclog.ifError;
+fs.mkdir('/foo', ifError);
+```
+
+### cclog.replace()
+replace `console` functions with `cclog`, `console.log(msg)` will work like `cclog.log(msg)`
+
+### cclog.restore()
+restore original `console` functions, but keep the function that doesn't present in original `console`.
+
+## Snapshot
 
 ![](http://club.cnodejs.org/user_data/images/4efc278525fa69ac6900003e/4efc278525fa69ac6900003e1333196595688.png)
-
-## How to use
-
-```js
-var cclog = require('cclog');
-cclog.log('my information');
-cclog.info('my information');
-cclog.warn('my information');
-cclog.error('my information');
-```
-
-* traceError
-
-Sometimes the err is not a `Error` instance but an object, `console.log(err.stack)` will fail, maybe you want 
-inspect this object.
-
-```js
-cclog.traceError(new Error('error object'));
-cclog.traceError({msg: 'error message'});
-```
-
-* ifError
-
-Sometimes, we just need log the error.
-
-```js
-fs.mkdir(dir, cclog.ifError);
-```
-
-You can replace origin console
-
-```js
-require('cclog').replace();
-console.log('replaced with cclog');
-```
-
-and restore to origin console
-
-```JS
-require('cclog').replace();
-console.log('replaced with cclog');
-console.restore();
-console.log('restore to origin');
-console.replace();
-console.log('replaced with cclog again');
-```
 
 ## License 
 
