@@ -1,5 +1,7 @@
 # cclog
 
+colorful console log
+
 Extends the native Node.JS `console` object to prefix logging functions
 with the [CallSite](http://github.com/visionmedia/callsite) information.
 
@@ -30,10 +32,10 @@ cclog.traceError({msg: 'error message'});
 
 * ifError
 
-Sometimes, callback function could be very simple, just an dummy function or log function.
+Sometimes, we just need log the error.
 
 ```js
-User.save(user, cclog.ifError);
+fs.mkdir(dir, cclog.ifError);
 ```
 
 You can replace origin console
