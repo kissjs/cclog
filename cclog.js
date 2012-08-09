@@ -60,7 +60,7 @@ exports.dir = function(obj, level) {
   process.stdout.write(traceFormat(__stack[1], styles.blue) + util.inspect(obj, false, level, exports.useColors) + '\n');
 }
 
-exports.traceError = function(obj) {
+exports.trace = function(obj) {
   var info = traceFormat(__stack[1], styles.red);
   if(obj instanceof Error) {
     process.stderr.write(info + obj.stack + '\n');
@@ -94,7 +94,6 @@ function ifErrorGetter() {
 }
 
 exports.__defineGetter__('ifError', ifErrorGetter);
-exports.__defineGetter__('logIfError', ifErrorGetter);
 
 /**
  * formatting function.
@@ -131,9 +130,8 @@ exports.replace = function() {
     console.warn = exports.warn
     console.error = exports.error
     console.dir = exports.dir
-    console.traceError = exports.traceError
+    console.trace = exports.trace
     console.__defineGetter__('ifError', ifErrorGetter);
-    console.__defineGetter__('logIfError', ifErrorGetter);
   }
 
   function restore() {
