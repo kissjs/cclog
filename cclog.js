@@ -36,7 +36,7 @@ var styles = {
 
 exports.useColors = tty.isatty();
 
-exports.log = function() {
+exports.debug = exports.log = function() {
   var info = traceFormat(__stack[1], styles.grey);
   process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
@@ -106,7 +106,7 @@ exports.__defineGetter__('ifError', ifErrorGetter);
 function traceFormat (call, style) {
   var basename = call.getFileName().replace(process.cwd() + '/', '')
     , date = new Date()
-    , str = util.format('%d-%d-%d %d:%d:%d [%s:%d]:', date.getUTCFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), basename, call.getLineNumber())
+    , str = util.format('%d-%d-%d %d:%d:%d [%s:%d]:', date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), basename, call.getLineNumber())
 
   if (false === exports.traceColors) {
     return str;
