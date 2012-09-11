@@ -95,6 +95,10 @@ function ifErrorGetter() {
 
 exports.__defineGetter__('ifError', ifErrorGetter);
 
+function formatNumber(num) {
+  return (num < 10 ? '0' : '') + num;
+}
+
 /**
  * formatting function.
  *
@@ -106,7 +110,7 @@ exports.__defineGetter__('ifError', ifErrorGetter);
 function traceFormat (call, style) {
   var basename = call.getFileName().replace(process.cwd() + '/', '')
     , date = new Date()
-    , str = util.format('%d-%d-%d %d:%d:%d [%s:%d]:', date.getFullYear(), date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), basename, call.getLineNumber())
+    , str = util.format('%d-%s-%s %s:%s:%s [%s:%d]:', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), basename, call.getLineNumber())
 
   if (false === exports.traceColors) {
     return str;
