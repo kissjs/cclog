@@ -3,7 +3,7 @@
  * Module dependencies.
  */
 
-var callsite = require('callsite')
+var stack = require('callsite')
   , tty = require('tty')
   , util = require('util')
   , origin = {}
@@ -37,31 +37,31 @@ var styles = {
 exports.useColors = tty.isatty();
 
 exports.debug = exports.log = function() {
-  var info = traceFormat(__stack[1], styles.grey);
+  var info = traceFormat(stack()[1], styles.grey);
   process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.info = function() {
-  var info = traceFormat(__stack[1], styles.green);
+  var info = traceFormat(stack()[1], styles.green);
   process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.warn = function() {
-  var info = traceFormat(__stack[1], styles.yellow);
+  var info = traceFormat(stack()[1], styles.yellow);
   process.stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.error = function() {
-  var info = traceFormat(__stack[1], styles.red);
+  var info = traceFormat(stack()[1], styles.red);
   process.stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.dir = function(obj, level) {
-  process.stdout.write(traceFormat(__stack[1], styles.blue) + util.inspect(obj, false, level, exports.useColors) + '\n');
+  process.stdout.write(traceFormat(stack()[1], styles.blue) + util.inspect(obj, false, level, exports.useColors) + '\n');
 }
 
 exports.trace = function(obj) {
-  var info = traceFormat(__stack[1], styles.red);
+  var info = traceFormat(stack()[1], styles.red);
   if(obj instanceof Error) {
     process.stderr.write(info + obj.stack + '\n');
   } else {
@@ -70,8 +70,9 @@ exports.trace = function(obj) {
 }
 
 function ifErrorGetter() {
-  var call = __stack[1];
+  var call = stack()[1];
   return function(err) {
+    var __stack = stack();
     // uncomment to show stack
     // process.stdout.write('\n----cclog-debug--\n')
     // process.stdout.write(__stack.map(function(c){return c && (c.getFileName() + ':' + c.getLineNumber()) || '<native>'}).join('\n'))
