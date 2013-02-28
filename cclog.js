@@ -74,7 +74,7 @@ function printStack(out, start, end) {
   var _stack = stack();
   for(var i = start; i< end; i++) {
     var s = _stack[i];
-    out.write('    at ' + (s ? ((s.getFunctionName() || 'anonymouse') + '(\033[35m' + s.getFileName() + ':' + s.getLineNumber() + '\033[39m)') : '<native>') + '\n');
+    out.write('    at ' + (s ? ((s.getFunctionName() || '<anonymouse>') + ' \033[35m' + s.getFileName() + ':' + s.getLineNumber() + '\033[39m') : '<native>') + '\n');
   }
 }
 
