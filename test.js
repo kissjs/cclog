@@ -1,5 +1,8 @@
-require('./cclog').replace();
+var cclog = require('./cclog');
 var fs = require('fs')
+cclog.inspect('33', 33, "33", [33]);
+
+cclog.replace();
 
 console.log('replace with cclog');
 console.log('this is log');
