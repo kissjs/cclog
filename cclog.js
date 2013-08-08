@@ -37,9 +37,11 @@ var styles = {
 exports.useColors = tty.isatty();
 
 exports.inspect = function() {
-    exports.log.apply(null, Array.prototype.map.call(arguments, function(arg){
-                return util.inspect(arg, false, 3, exports.useColors)
-    }));
+    var text = Array.prototype.map.call(arguments, function(arg){
+            return util.inspect(arg, false, 3, exports.useColors)
+    });
+    var info = traceFormat(stack()[1], styles.grey);
+    process.stdout.write(info + text + '\n');
 }
 
 exports.debug = exports.log = function() {
