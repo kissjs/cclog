@@ -35,6 +35,12 @@ var styles = {
   'yellow'    : ['\033[33m', '\033[39m']
 };
 
+var exports = module.exports = function log() {
+  var info = traceFormat(stack()[1], styles.grey);
+  process.stdout.write(info + util.format.apply(this, arguments) + '\n');
+}
+exports.debug = exports.log = exports;
+
 exports.useColors = tty.isatty();
 
 exports.inspect = function() {
@@ -43,11 +49,6 @@ exports.inspect = function() {
     });
     var info = traceFormat(stack()[1], styles.grey);
     process.stdout.write(info + text + '\n');
-}
-
-exports.debug = exports.log = function() {
-  var info = traceFormat(stack()[1], styles.grey);
-  process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.info = function() {

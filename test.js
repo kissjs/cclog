@@ -43,3 +43,9 @@ console.log('this is log');
 console.info('this is info');
 console.warn('this is warn');
 console.error('this is error');
+
+cclog('cclog');
+cclog.log('cclog.log');
+cclog.info('cclog.info');
+cclog.error('cclog.error');
+cclog.warn('cclog.warn');
