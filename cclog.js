@@ -6,6 +6,7 @@
 var stack = require('callsite')
   , tty = require('tty')
   , util = require('util')
+  , pathSep = require('path').sep
   , origin = {}
   ;
 
@@ -126,7 +127,7 @@ function formatNumber(num) {
  */
 
 function traceFormat (call, style) {
-  var basename = call.getFileName().replace(process.cwd() + '/', '')
+  var basename = call.getFileName().replace(process.cwd() + pathSep, '')
     , date = new Date()
     , str = util.format('%d-%s-%s %s:%s:%s [%s:%d]:', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), basename, call.getLineNumber())
 
