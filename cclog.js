@@ -35,43 +35,45 @@ var styles = {
   'yellow'    : ['\033[33m', '\033[39m']
 };
 
-var exports = module.exports = function log() {
-  var info = traceFormat(stack()[1], styles.grey);
+exports.useColors = tty.isatty();
+
+var exports = module.exports = function() {
+  var info = traceFormat(stack()[1], styles.green, 'INFO');
   process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
-exports.debug = exports.log = exports;
 
-exports.useColors = tty.isatty();
+exports.info = exports.log = exports;
+
+exports.debug = function () {
+  var info = traceFormat(stack()[1], styles.grey, 'DBUG');
+  process.stdout.write(info + util.format.apply(this, arguments) + '\n');
+}
 
 exports.inspect = function() {
     var text = Array.prototype.map.call(arguments, function(arg){
             return util.inspect(arg, false, 3, exports.useColors)
     });
-    var info = traceFormat(stack()[1], styles.grey);
+    var info = traceFormat(stack()[1], styles.grey, 'INFO');
     process.stdout.write(info + text + '\n');
 }
 
-exports.info = function() {
-  var info = traceFormat(stack()[1], styles.green);
-  process.stdout.write(info + util.format.apply(this, arguments) + '\n');
-}
-
 exports.warn = function() {
-  var info = traceFormat(stack()[1], styles.yellow);
+  var info = traceFormat(stack()[1], styles.yellow, 'WARN');
   process.stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.error = function() {
-  var info = traceFormat(stack()[1], styles.red);
+  var info = traceFormat(stack()[1], styles.red, 'ERRO');
   process.stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.dir = function(obj, level) {
-  process.stdout.write(traceFormat(stack()[1], styles.blue) + util.inspect(obj, false, level, exports.useColors) + '\n');
+  process.stdout.write(traceFormat(stack()[1], styles.blue, 'INFO') + util.inspect(obj, false, level, exports.useColors) + '\n');
 }
 
 exports.trace = function(obj) {
-  var info = traceFormat(stack()[1], styles.red);
+  // TODO fix trace behavior
+  var info = traceFormat(stack()[1], styles.red, 'DBUG');
   if(obj instanceof Error) {
     process.stderr.write(info + obj.stack + '\n');
   } else {
@@ -98,10 +100,10 @@ function ifErrorGetter() {
     // process.stdout.write('\n')
     if(err) {
       if(__stack.length < 2) {
-        var str = traceFormat(call, styles.red);
+        var str = traceFormat(call, styles.red, 'ERRO');
       } else {
         var emitCall = __stack[1].getFileName() == 'events.js' ? __stack[2] : __stack[1];
-        var str = traceFormat(call, styles.red) + 'at ' + traceFormat(emitCall, styles.yellow);
+        var str = traceFormat(call, styles.red, 'ERRO') + 'at ' + traceFormat(emitCall, styles.yellow);
       }
       if(err instanceof Error) {
         str += err.stack + '\n';
@@ -127,7 +129,7 @@ function formatNumber(num) {
  * @api public
  */
 
-function traceFormat (call, style) {
+function traceFormat (call, style, levelStr) {
   var basename = call.getFileName().replace(process.cwd() + pathSep, '')
     , date = new Date()
     , str = util.format('%d-%s-%s %s:%s:%s [%s:%d]:', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), basename, call.getLineNumber())
@@ -137,7 +139,7 @@ function traceFormat (call, style) {
   } else if(exports.traceColors === true || exports.useColors) {
     return style[0] + str + style[1];
   } else {
-    return str;
+    return levelStr ? levelStr + " " + str : str;
   }
 }
 

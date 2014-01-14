@@ -1,4 +1,5 @@
 var cclog = require('./cclog');
+cclog.useColors = true;
 var fs = require('fs')
 cclog.inspect('33', 33, "33", [33]);
 
@@ -48,4 +49,12 @@ cclog('cclog');
 cclog.log('cclog.log');
 cclog.info('cclog.info');
 cclog.error('cclog.error');
+cclog.warn('cclog.warn');
+
+cclog.useColors = false;
+
+cclog('cclog');
+cclog.log('cclog.log');
+cclog.info('cclog.info');
+cclog.error('cclog.error', new Error('A fake error occused'));
 cclog.warn('cclog.warn');
