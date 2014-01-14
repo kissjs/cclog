@@ -48,7 +48,7 @@ console.error('this is error');
 cclog('cclog');
 cclog.log('cclog.log');
 cclog.info('cclog.info');
-cclog.error('cclog.error');
+cclog.error('cclog.error', new Error('A fake error occused'));
 cclog.warn('cclog.warn');
 
 cclog.useColors = false;
