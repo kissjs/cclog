@@ -37,6 +37,16 @@ function foo(callback) {
 
 foo(cclog.ifError);
 
+// intercept
+function bar(callback) {
+    callback(null, 1, 2, 3);
+}
+
+bar(cclog.intercept('The bar result'));
+foo(cclog.intercept('The bar result', function(err, data) {
+            cclog('done', err, data);
+}));
+
 cclog.restore();
 console.log('');
 console.log('restore to origin console');

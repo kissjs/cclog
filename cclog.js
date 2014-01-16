@@ -7,6 +7,7 @@ var stack = require('callsite')
   , tty = require('tty')
   , util = require('util')
   , pathSep = require('path').sep
+  , __slice = Array.prototype.slice
   ;
 
 var styles = {
@@ -84,6 +85,39 @@ function printStack(out, start, end) {
   }
 }
 
+exports.intercept = function(msg, fn){
+  var call = stack()[1];
+  if(fn === undefined && typeof msg == 'function') {
+    fn = msg;
+    msg = '';
+  }
+  return function (err) {
+    var __stack = stack();
+    if(err) {
+      var lineStr = traceFormat(call, styles.red, 'ERRO') + msg + ' ';
+      var str = lineStr;
+      if(__stack.length >= 2) {
+        var emitCall = __stack[1].getFileName() == 'events.js' ? __stack[2] : __stack[1];
+        str = lineStr + 'at ' + traceFormat(emitCall, styles.yellow);
+      }
+      if(err instanceof Error) {
+        str += err.stack + '\n';
+      } else {
+        str += util.inspect(err, false, null, exports.useColors) + '\n';
+      }
+      process.stderr.write(lineStr + util.format.apply(this, arguments) + '\n');
+      process.stderr.write(str);
+    } else {
+      var lineStr = traceFormat(call, styles.green, 'INFO');
+      process.stdout.write(lineStr + util.format.apply(this, arguments) + '\n');
+    }
+    if(fn) {
+      var args = __slice.call(arguments);
+      fn.apply(this, args);
+    }
+  };
+}
+
 function ifErrorGetter() {
   var call = stack()[1];
   return function(err) {
@@ -93,16 +127,19 @@ function ifErrorGetter() {
     // process.stdout.write(__stack.map(function(c){return c && (c.getFileName() + ':' + c.getLineNumber()) || '<native>'}).join('\n'))
     // process.stdout.write('\n')
     if(err) {
-      if(__stack.length < 2) {
-        var str = traceFormat(call, styles.red, 'ERRO');
-      } else {
+      var lineStr = traceFormat(call, styles.red, 'ERRO');
+      var str = lineStr;
+      if(__stack.length >= 2) {
         var emitCall = __stack[1].getFileName() == 'events.js' ? __stack[2] : __stack[1];
-        var str = traceFormat(call, styles.red, 'ERRO') + 'at ' + traceFormat(emitCall, styles.yellow);
+        str = lineStr + 'at ' + traceFormat(emitCall, styles.yellow);
       }
       if(err instanceof Error) {
         str += err.stack + '\n';
       } else {
         str += util.inspect(err, false, null, exports.useColors) + '\n';
+      }
+      if(arguments.length > 1) {
+        process.stderr.write(lineStr + util.format.apply(this, arguments) + '\n');
       }
       process.stderr.write(str);
     }
