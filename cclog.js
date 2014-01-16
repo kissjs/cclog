@@ -7,14 +7,7 @@ var stack = require('callsite')
   , tty = require('tty')
   , util = require('util')
   , pathSep = require('path').sep
-  , origin = {}
   ;
-
-origin.log = console.log
-origin.info = console.info
-origin.warn = console.warn
-origin.error = console.error
-origin.dir = console.dir
 
 var styles = {
   //styles
@@ -144,33 +137,30 @@ function traceFormat (call, style, levelStr) {
   }
 }
 
+var origin = {};
+var methods = ['log','info','warn','error','dir','trace'];
+
 /**
- * Adds trace getter to the `console` object.
+ * replace origin console methods.
  *
  * @api public
  */
-exports.replace = function() {
-
-  function replace() {
-    console.log = exports.log
-    console.info = exports.info
-    console.warn = exports.warn
-    console.error = exports.error
-    console.dir = exports.dir
-    console.trace = exports.trace
-    console.__defineGetter__('ifError', ifErrorGetter);
-  }
-
-  function restore() {
-    console.log = origin.log
-    console.error = origin.error
-    console.warn = origin.warn
-    console.info = origin.info
-    console.dir = origin.dir
-  }
-
-  console.replace = exports.replace = replace;
-  console.restore = exports.restore = restore;
-
-  replace();
+function replace() {
+  methods.forEach(function(m){
+      origin[m] = console[m];
+      console[m] = exports[m];
+  })
 }
+
+/**
+ * restore origin console methods
+ */
+function restore() {
+  methods.forEach(function(m){
+      origin[m] = console[m];
+      console[m] = exports[m];
+  })
+}
+
+exports.replace = replace;
+exports.restore = restore;

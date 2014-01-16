@@ -17,13 +17,13 @@ console.trace(new Error('this is an error'));
 console.dir({obj: 'dir obj'})
 
 // this will error
-fs.mkdir(__dirname + '/test.js', console.ifError);
+fs.mkdir(__dirname + '/test.js', cclog.ifError);
 
 // test ifError for EventEmitter
 var EventEmitter = require('events').EventEmitter;
 var emitter = new EventEmitter();
 
-emitter.on('error', console.ifError);
+emitter.on('error', cclog.ifError);
 
 var err = new Error('error from emitter');
 
@@ -35,9 +35,9 @@ function foo(callback) {
   callback(err);
 }
 
-foo(console.ifError);
+foo(cclog.ifError);
 
-console.restore();
+cclog.restore();
 console.log('');
 console.log('restore to origin console');
 console.log('this is log');
@@ -56,5 +56,7 @@ cclog.useColors = false;
 cclog('cclog');
 cclog.log('cclog.log');
 cclog.info('cclog.info');
+cclog.error('cclog.error', 'just', {err: 1});
 cclog.error('cclog.error', new Error('A fake error occused'));
 cclog.warn('cclog.warn');
+cclog('====== ALL DONE ======');
