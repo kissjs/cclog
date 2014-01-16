@@ -108,7 +108,7 @@ exports.intercept = function(msg, fn){
       process.stderr.write(lineStr + util.format.apply(this, arguments) + '\n');
       process.stderr.write(str);
     } else {
-      var lineStr = traceFormat(call, styles.green, 'INFO');
+      var lineStr = traceFormat(call, styles.green, 'INFO') + msg + ' ';
       process.stdout.write(lineStr + util.format.apply(this, arguments) + '\n');
     }
     if(fn) {
