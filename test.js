@@ -70,3 +70,8 @@ cclog.error('cclog.error', 'just', {err: 1});
 cclog.error('cclog.error', new Error('A fake error occused'));
 cclog.warn('cclog.warn');
 cclog('====== ALL DONE ======');
+
+var logger = cclog.logger(__dirname + '/log.txt');
+logger.log('logger.log');
+logger.info('logger.info');
+logger.error('logger.error', new Error('A fake error'));
