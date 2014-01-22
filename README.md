@@ -9,17 +9,15 @@ Colorful console log, with line number via v8 [callSite](http://github.com/visio
     
 ## Usage
 
+### cclog(fmt, [...])
 ### cclog.log(fmt, [...])
+### cclog.info(fmt, [...])
 *stdout* fmt see [util.format](http://nodejs.org/api/util.html#util_util_format_format)
 
-### cclog.info(fmt, [...])
-*stdout*
-
 ### cclog.warn(fmt, [...])
-*stderr*
-
 ### cclog.error(fmt, [...])
-*stderr*
+*stderr* fmt see [util.format](http://nodejs.org/api/util.html#util_util_format_format)
+
 
 ### cclog.dir(obj, level)
 *stdout* inspect obj
@@ -28,7 +26,7 @@ Colorful console log, with line number via v8 [callSite](http://github.com/visio
 *stderr* if obj is `Error` instance then log the stack, else inspect it.
 
 ### cclog.ifError
-*stderr* *getter*
+*stderr* generate a function to handle error.
 
 ```js
 fs.mkdir('/foo', function(err) {
@@ -46,6 +44,20 @@ WRONG
 ```js
 var ifError = cclog.ifError;
 fs.mkdir('/foo', ifError);
+```
+### cclog.intercept(callback)
+
+```
+db.get('foo', cclog.intercept(handle));
+```
+
+alias
+
+```
+db.get('foo', function(err, data) {
+  cclog.info(err, data);
+  handle(err, data);
+}
 ```
 
 ### cclog.replace()
