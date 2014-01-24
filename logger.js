@@ -86,7 +86,7 @@ exports.warn = function() {
 
 exports.error = function() {
   var info = traceFormat(stack()[1], styles.red, 'ERRO');
-  for(var i=0;i<arguments.length;i++) arguments[i]=arguments[i].stack || arguments[i];
+  for(var i=0;i<arguments.length;i++) arguments[i]=arguments[i] && arguments[i].stack || arguments[i];
   stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 

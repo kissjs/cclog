@@ -73,5 +73,5 @@ cclog('====== ALL DONE ======');
 
 var logger = cclog.logger(__dirname + '/log.txt');
 logger.log('logger.log');
-logger.info('logger.info');
-logger.error('logger.error', new Error('A fake error'));
+logger.info('logger.info', 0, 'foo', null, 'bar', undefined);
+logger.error('logger.error', new Error('A fake error'), null, 'foo', undefined);

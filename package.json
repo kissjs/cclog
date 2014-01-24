@@ -3,6 +3,9 @@
   , "version": "0.2.0"
   , "description": "A simple but powerful logger module. Support colors, line number, file"
   , "main": "cclog"
+  , "scripts": {
+        "test": "node test.js"
+    }
   , "dependencies": {
         "callsite": "1.0.0"
     }
