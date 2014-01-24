@@ -133,7 +133,7 @@ function formatNumber(num) {
 function traceFormat (call, style, levelStr) {
   var basename = call.getFileName().replace(process.cwd() + pathSep, '')
     , date = new Date()
-    , str = util.format('%d-%s-%s %s:%s:%s [%s:%d]:', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), basename, call.getLineNumber())
+    , str = util.format('%d-%s-%s %s:%s:%s [%s:%d]: ', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), basename, call.getLineNumber())
 
   if (false === exports.traceColors) {
     return str;
