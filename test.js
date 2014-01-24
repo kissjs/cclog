@@ -55,6 +55,6 @@ cclog.useColors = false;
 
 cclog('cclog');
 cclog.log('cclog.log');
-cclog.info('cclog.info');
-cclog.error('cclog.error', new Error('A fake error occused'));
+cclog.info('cclog.info', null, 'foo', undefined);
+cclog.error('cclog.error', new Error('A fake error occused'), null, 'foo', undefined);
 cclog.warn('cclog.warn');
