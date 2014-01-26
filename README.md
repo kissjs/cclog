@@ -13,13 +13,16 @@ Colorful console log, with line number via v8 [callSite](http://github.com/visio
 if `true` show colors in log, default `tty.isatty()`
 ### cclog.setLevel(levelStr)
 only show log with the setting level or above.
-avariable params: `debug`, `info`, `warn`, `error`, `none`
+avariable params: `'debug'`, `'info'`, `'warn'`, `'error'`, `'none'`
 ### cclog.logger(filename|options)
 return a new logger object.
 `cclog` is also a logger object;
-options.filename
-options.stdout
-options.stderr
+
+options.filename the path of log file, default `null`.
+
+options.stdout  the stream use for stdout.
+
+options.stderr  the stream use for stderr.
 
 ### cclog(fmt, [...])
 ### cclog.log(fmt, [...])
@@ -37,39 +40,45 @@ options.stderr
 ### cclog.trace(obj)
 *stderr* if obj is `Error` instance then log the stack, else inspect it.
 
+### cclog.intercept([msg], [callback])
+
+```js
+db.get('foo', cclog.intercept('callback foo', handle));
+```
+
+alias
+
+```js
+db.get('foo', function(err, data) {
+  if(err) {
+    cclog.error('callback foo', err);
+  } else {
+    cclog.info('callback foo', err, data);
+  }
+  handle && handle(err, data);
+}
+```
+
 ### cclog.ifError
+
+_deprecated_ use `cclog.intercept()` instead.
 *stderr* generate a function to handle error.
 
 ```js
 fs.mkdir('/foo', function(err) {
-  if(err) cclog.trace(err);
+  if(err) cclog.error(err);
 });
 ```
 
 use `cclog.ifError` to get a closure, NOTE always use `cclog.`
 
 ```js
-fs.mkdir('/foo', cclog.ifError);
-```
-
-WRONG
-```js
+// WRONG
 var ifError = cclog.ifError;
 fs.mkdir('/foo', ifError);
-```
-### cclog.intercept(callback)
 
-```
-db.get('foo', cclog.intercept(handle));
-```
-
-alias
-
-```
-db.get('foo', function(err, data) {
-  cclog.info(err, data);
-  handle(err, data);
-}
+// right
+fs.mkdir('/foo', cclog.ifError);
 ```
 
 ### cclog.replace()
