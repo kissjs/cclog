@@ -87,9 +87,9 @@ replace `console` functions with `cclog`, `console.log(msg)` will work like `ccl
 ### cclog.restore()
 restore original `console` functions, but keep the function that doesn't present in original `console`.
 
-## Snapshot
+## Screenshot
 
-![](http://club.cnodejs.org/user_data/images/4efc278525fa69ac6900003e/4efc278525fa69ac6900003e1333196595688.png)
+![](http://guileen.github.io/upload/2014/cclog.jpg)
 
 ## License 
 
