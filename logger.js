@@ -11,6 +11,12 @@ var stack = require('callsite')
   , __slice = Array.prototype.slice
   ;
 
+var LEVEL_DEBUG = 1;
+var LEVEL_INFO = 2;
+var LEVEL_WARN = 3;
+var LEVEL_ERROR = 4;
+var LEVEL_NONE = 0xff;
+
 var styles = {
   //styles
   'bold'      : ['\033[1m',  '\033[22m'],
@@ -59,19 +65,33 @@ var stdout = options.stdout || fileStream || process.stdout;
 var stderr = options.stderr || fileStream || process.stderr;
 
 var exports = function() {
+  if(exports.level > LEVEL_INFO) return;
   var info = traceFormat(stack()[1], styles.green, 'INFO');
   stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.useColors = options.useColors;
+exports.level = 0;
 exports.info = exports.log = exports;
 
+exports.setLevel = function(str) {
+  exports.level = {
+    debug: LEVEL_DEBUG,
+    info: LEVEL_INFO,
+    warn: LEVEL_WARN,
+    error: LEVEL_ERROR,
+    none: LEVEL_NONE
+  }[str];
+}
+
 exports.debug = function () {
+  if(exports.level > LEVEL_DEBUG) return;
   var info = traceFormat(stack()[1], styles.grey, 'DBUG');
   stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.inspect = function() {
+    if(exports.level > LEVEL_INFO) return;
     var text = Array.prototype.map.call(arguments, function(arg){
             return util.inspect(arg, false, 3, exports.useColors)
     });
@@ -80,22 +100,26 @@ exports.inspect = function() {
 }
 
 exports.warn = function() {
+  if(exports.level > LEVEL_WARN) return;
   var info = traceFormat(stack()[1], styles.yellow, 'WARN');
   stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.error = function() {
+  if(exports.level > LEVEL_ERROR) return;
   var info = traceFormat(stack()[1], styles.red, 'ERRO');
   for(var i=0;i<arguments.length;i++) arguments[i]=arguments[i] && arguments[i].stack || arguments[i];
   stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.dir = function(obj, level) {
+  if(exports.level > LEVEL_INFO) return;
   stdout.write(traceFormat(stack()[1], styles.blue, 'INFO') + util.inspect(obj, false, level, exports.useColors) + '\n');
 }
 
 exports.trace = function(obj) {
   // TODO fix trace behavior
+  if(exports.level > LEVEL_DEBUG) return;
   var info = traceFormat(stack()[1], styles.red, 'DBUG');
   if(obj instanceof Error) {
     stderr.write(info + obj.stack + '\n');
@@ -122,6 +146,7 @@ exports.intercept = function(msg, fn){
   return function (err) {
     var __stack = stack();
     if(err) {
+      if(exports.level > LEVEL_ERROR) return;
       var lineStr = traceFormat(call, styles.red, 'ERRO') + msg + ' ';
       var str = lineStr;
       if(__stack.length >= 2) {
@@ -136,6 +161,7 @@ exports.intercept = function(msg, fn){
       stderr.write(lineStr + util.format.apply(this, arguments) + '\n');
       stderr.write(str);
     } else {
+      if(exports.level > LEVEL_INFO) return;
       var lineStr = traceFormat(call, styles.green, 'INFO') + msg + ' ';
       stdout.write(lineStr + util.format.apply(this, arguments) + '\n');
     }
@@ -155,6 +181,7 @@ function ifErrorGetter() {
     // stdout.write(__stack.map(function(c){return c && (c.getFileName() + ':' + c.getLineNumber()) || '<native>'}).join('\n'))
     // stdout.write('\n')
     if(err) {
+      if(exports.level > LEVEL_ERROR) return;
       var lineStr = traceFormat(call, styles.red, 'ERRO');
       var str = lineStr;
       if(__stack.length >= 2) {

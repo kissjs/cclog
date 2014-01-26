@@ -69,9 +69,18 @@ cclog.info('cclog.info');
 cclog.error('cclog.error', 'just', {err: 1});
 cclog.error('cclog.error', new Error('A fake error occused'));
 cclog.warn('cclog.warn');
-cclog('====== ALL DONE ======');
+
+cclog.setLevel('warn');
+cclog.log('should not see this');
+cclog.debug('should not see this');
+cclog.info('should not see this');
+cclog.warn('should see this');
+cclog.error('should see this');
 
 var logger = cclog.logger(__dirname + '/log.txt');
 logger.log('logger.log');
 logger.info('logger.info', 0, 'foo', null, 'bar', undefined);
 logger.error('logger.error', new Error('A fake error'), null, 'foo', undefined);
+
+cclog.setLevel('info');
+cclog('====== ALL DONE ======');
