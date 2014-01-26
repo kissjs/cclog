@@ -1,7 +1,13 @@
 # cclog
-
 Colorful console log, with line number via v8 [callSite](http://github.com/visionmedia/callsite).
+![](http://guileen.github.io/upload/2014/cclog.jpg)
 
+## Features
+
+* colourful style
+* fast get line number with callsite
+* show date
+* replace default console
 
 ## Installation
 
@@ -86,10 +92,6 @@ replace `console` functions with `cclog`, `console.log(msg)` will work like `ccl
 
 ### cclog.restore()
 restore original `console` functions, but keep the function that doesn't present in original `console`.
-
-## Screenshot
-
-![](http://guileen.github.io/upload/2014/cclog.jpg)
 
 ## License 
 
