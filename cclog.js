@@ -16,6 +16,11 @@ origin.warn = console.warn
 origin.error = console.error
 origin.dir = console.dir
 
+var LEVEL_DEBUG = 1;
+var LEVEL_INFO = 2;
+var LEVEL_WARN = 3;
+var LEVEL_ERROR = 4;
+
 var styles = {
   //styles
   'bold'      : ['\033[1m',  '\033[22m'],
@@ -35,21 +40,33 @@ var styles = {
   'yellow'    : ['\033[33m', '\033[39m']
 };
 
-exports.useColors = tty.isatty();
-
 var exports = module.exports = function() {
+  if(exports.level > 2) return;
   var info = traceFormat(stack()[1], styles.green, 'INFO');
   process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
+exports.useColors = tty.isatty();
+exports.level = 0;
 exports.info = exports.log = exports;
 
+exports.setLevel = function(str) {
+  exports.level = {
+    debug: LEVEL_DEBUG,
+    info: LEVEL_INFO,
+    warn: LEVEL_WARN,
+    error: LEVEL_ERROR,
+  }[str];
+}
+
 exports.debug = function () {
+  if(exports.level > LEVEL_DEBUG) return;
   var info = traceFormat(stack()[1], styles.grey, 'DBUG');
   process.stdout.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.inspect = function() {
+  if(exports.level > LEVEL_INFO) return;
     var text = Array.prototype.map.call(arguments, function(arg){
             return util.inspect(arg, false, 3, exports.useColors)
     });
@@ -58,21 +75,25 @@ exports.inspect = function() {
 }
 
 exports.warn = function() {
+  if(exports.level > LEVEL_WARN) return;
   var info = traceFormat(stack()[1], styles.yellow, 'WARN');
   process.stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.error = function() {
+  if(exports.level > LEVEL_ERROR) return;
   var info = traceFormat(stack()[1], styles.red, 'ERRO');
   for(var i=0;i<arguments.length;i++) arguments[i]=arguments[i] && arguments[i].stack || arguments[i];
   process.stderr.write(info + util.format.apply(this, arguments) + '\n');
 }
 
 exports.dir = function(obj, level) {
+  if(exports.level > LEVEL_INFO) return;
   process.stdout.write(traceFormat(stack()[1], styles.blue, 'INFO') + util.inspect(obj, false, level, exports.useColors) + '\n');
 }
 
 exports.trace = function(obj) {
+  if(exports.level > LEVEL_DEBUG) return;
   // TODO fix trace behavior
   var info = traceFormat(stack()[1], styles.red, 'DBUG');
   if(obj instanceof Error) {
@@ -94,6 +115,7 @@ function printStack(out, start, end) {
 function ifErrorGetter() {
   var call = stack()[1];
   return function(err) {
+    if(exports.level > LEVEL_ERROR) return;
     var __stack = stack();
     // uncomment to show stack
     // process.stdout.write('\n----cclog-debug--\n')

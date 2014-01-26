@@ -58,3 +58,10 @@ cclog.log('cclog.log');
 cclog.info('cclog.info', null, 'foo', undefined);
 cclog.error('cclog.error', new Error('A fake error occused'), null, 'foo', undefined);
 cclog.warn('cclog.warn');
+
+cclog.setLevel('warn');
+cclog.log('should not see this');
+cclog.debug('should not see this');
+cclog.info('should not see this');
+cclog.warn('should see this');
+cclog.error('should see this');
