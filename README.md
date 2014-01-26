@@ -1,4 +1,6 @@
 # cclog
+<a href="https://travis-ci.org/kissjs/cclog"><img src="https://api.travis-ci.org/kissjs/cclog.png"></a>
+<a href="https://nodei.co/npm/cclog/"><img src="https://nodei.co/npm/cclog.png?downloads=true&stars=true"></a>
 Colorful console log, with line number via v8 [callSite](http://github.com/visionmedia/callsite).
 ![](http://guileen.github.io/upload/2014/cclog.jpg)
 
