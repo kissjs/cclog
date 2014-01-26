@@ -9,6 +9,18 @@ Colorful console log, with line number via v8 [callSite](http://github.com/visio
     
 ## Usage
 
+### cclog.useColors
+if `true` show colors in log, default `tty.isatty()`
+### cclog.setLevel(levelStr)
+only show log with the setting level or above.
+avariable params: `debug`, `info`, `warn`, `error`, `none`
+### cclog.logger(filename|options)
+return a new logger object.
+`cclog` is also a logger object;
+options.filename
+options.stdout
+options.stderr
+
 ### cclog(fmt, [...])
 ### cclog.log(fmt, [...])
 ### cclog.info(fmt, [...])
