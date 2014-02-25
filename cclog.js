@@ -36,5 +36,5 @@ function restore() {
   })
 }
 
-exports.replace = replace;
-exports.restore = restore;
+exports.replace = exports.replaceConsole = replace;
+exports.restore = exports.restoreConsole = restore;
