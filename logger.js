@@ -36,10 +36,12 @@ var styles = {
   'yellow'    : ['\033[33m', '\033[39m']
 };
 
-var allOpenedFiles = [];
+var allOpenedStreams = [];
 process.on('exit', function(){
-    allOpenedFiles.forEach(function(f){
-        f.end();
+    allOpenedStreams.forEach(function(f){
+        try{
+          f.end();
+        }catch(e){}
     })
 })
 
@@ -56,13 +58,10 @@ if(typeof options == 'string') {
   }
 }
 options = options || {};
-var fileStream;
-if(options.filename) {
-  fileStream = fs.createWriteStream(options.filename, {encoding: 'utf-8', mode: 0644, flags: 'a'})
-  allOpenedFiles.push(fileStream);
-}
-var stdout = options.stdout || fileStream || process.stdout;
-var stderr = options.stderr || fileStream || process.stderr;
+var stdout = options.stdout || process.stdout;
+var stderr = options.stderr || process.stderr;
+if(stdout != process.stdout) allOpenedStreams.push(stdout);
+if(stderr != process.stderr) allOpenedStreams.push(stderr);
 
 var exports = function() {
   if(exports.level > LEVEL_INFO) return;
@@ -82,6 +81,20 @@ exports.setLevel = function(str) {
     error: LEVEL_ERROR,
     none: LEVEL_NONE
   }[str];
+}
+
+exports.setFilepath = function(path) {
+  exports.setStream(fs.createWriteStream(path, {encoding: 'utf-8', mode: 0644, flags: 'a'}));
+}
+
+exports.setStream = function(stream) {
+  stdout = stream;
+  stderr = stream;
+  allOpenedStreams.push(stream);
+}
+
+if(options.filename) {
+  exports.setFilepath(options.filename)
 }
 
 exports.debug = function () {

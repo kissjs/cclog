@@ -5,10 +5,7 @@
 var logger = require('./logger')
   , tty = require('tty');
 
-var exports = module.exports = logger({
-    stdout: process.stdout
-  , stderr: process.stderr
-});
+var exports = module.exports = logger();
 
 exports.logger = logger;
 
