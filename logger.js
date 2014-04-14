@@ -70,7 +70,6 @@ var exports = function() {
 }
 
 exports.useColors = options.useColors;
-exports.level = 0;
 exports.info = exports.log = exports;
 
 exports.setLevel = function(str) {
@@ -82,6 +81,8 @@ exports.setLevel = function(str) {
     none: LEVEL_NONE
   }[str];
 }
+
+exports.setLevel(process.env.LOG_LEVEL || 'info');
 
 exports.setFilepath = function(path) {
   exports.setStream(fs.createWriteStream(path, {encoding: 'utf-8', mode: 0644, flags: 'a'}));
