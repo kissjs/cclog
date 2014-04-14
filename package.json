@@ -1,6 +1,6 @@
 {
     "name": "cclog"
-  , "version": "0.3.0"
+  , "version": "0.3.1"
   , "description": "A simple but powerful logger module. Support colors, line number, file"
   , "main": "cclog"
   , "scripts": {
