@@ -105,11 +105,11 @@ exports.debug = function () {
 }
 
 exports.inspect = function() {
-    if(exports.level > LEVEL_INFO) return;
+    if(exports.level > LEVEL_DEBUG) return;
     var text = Array.prototype.map.call(arguments, function(arg){
             return util.inspect(arg, false, 3, exports.useColors)
     });
-    var info = traceFormat(stack()[1], styles.grey, 'INFO');
+    var info = traceFormat(stack()[1], styles.grey, 'DBUG');
     stdout.write(info + text + '\n');
 }
 
@@ -128,13 +128,13 @@ exports.error = function() {
 
 exports.dir = function(obj, level) {
   if(exports.level > LEVEL_INFO) return;
-  stdout.write(traceFormat(stack()[1], styles.blue, 'INFO') + util.inspect(obj, false, level, exports.useColors) + '\n');
+  stdout.write(traceFormat(stack()[1], styles.green, 'INFO') + util.inspect(obj, false, level, exports.useColors) + '\n');
 }
 
 exports.trace = function(obj) {
   // TODO fix trace behavior
   if(exports.level > LEVEL_DEBUG) return;
-  var info = traceFormat(stack()[1], styles.red, 'DBUG');
+  var info = traceFormat(stack()[1], styles.grey, 'TRAC');
   if(obj instanceof Error) {
     stderr.write(info + obj.stack + '\n');
   } else {
@@ -221,6 +221,10 @@ function formatNumber(num) {
   return (num < 10 ? '0' : '') + num;
 }
 
+function formatNumber3(num) {
+  return (num < 10 ? '00' + num : (num < 100 ? '0' + num : num))
+}
+
 /**
  * formatting function.
  *
@@ -232,14 +236,15 @@ function formatNumber(num) {
 function traceFormat (call, style, levelStr) {
   var basename = call.getFileName().replace(process.cwd() + pathSep, '')
     , date = new Date()
-    , str = util.format('%d-%s-%s %s:%s:%s [%s:%d]:', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), basename, call.getLineNumber())
+    , str = util.format('%d%s%s %s%s%s.%s %s:%d ', date.getYear() - 100, formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), formatNumber3(date.getMilliseconds()), basename, call.getLineNumber())
 
-  if (false === exports.traceColors) {
-    return str;
-  } else if(exports.traceColors === true || exports.useColors) {
+  if(levelStr) {
+    str = levelStr + ' ' + str;
+  }
+  if(exports.traceColors || exports.useColors) {
     return style[0] + str + style[1];
   } else {
-    return levelStr ? levelStr + " " + str : str;
+    return str;
   }
 }
 
