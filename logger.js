@@ -236,7 +236,7 @@ function formatNumber3(num) {
 function traceFormat (call, style, levelStr) {
   var basename = call.getFileName().replace(process.cwd() + pathSep, '')
     , date = new Date()
-    , str = util.format('%d%s%s-%s%s%s.%s %s:%d ', date.getYear() - 100, formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), formatNumber3(date.getMilliseconds()), basename, call.getLineNumber())
+    , str = util.format('%d-%s-%s %s:%s:%s.%s %s:%d ', date.getFullYear(), formatNumber(date.getMonth() + 1), formatNumber(date.getDate()), formatNumber(date.getHours()), formatNumber(date.getMinutes()), formatNumber(date.getSeconds()), formatNumber3(date.getMilliseconds()), basename, call.getLineNumber())
 
   if(levelStr) {
     str = levelStr + ' ' + str;
